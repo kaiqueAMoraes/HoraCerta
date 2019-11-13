@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -17,13 +18,22 @@ export class CadastrarHoraCertaPage implements OnInit {
     cor: new FormControl('', Validators.required)
   });
 
-  constructor() { }
+  constructor(private storage: Storage) { }
 
   ngOnInit() {
   }
-
+  
   cadastrarHoraCerta() {
-    console.log(this.formCadastrarHoraCerta.value);
-  }
+    let form = this.formCadastrarHoraCerta.value;
+    form.status = 0;
+    let listaHoraCerta = [form];
 
+    this.storage.get('listaHoraCerta').then((value: any) => {
+      if (value !== null || value !== undefined){
+        let objeto = JSON.parse(value);
+        listaHoraCerta = listaHoraCerta.concat(objeto);
+      }
+      this.storage.set('listaHoraCerta', JSON.stringify(listaHoraCerta));
+    });
+  }
 }
